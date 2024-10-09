@@ -26,6 +26,8 @@ from .tasks.navigation import __TASKS__ as NAVIGATION_TASKS
 from .tasks.service_catalog import __TASKS__ as SERVICE_CATALOG_TASKS
 from .tasks.compositional.base import CompositionalTask
 
+
+# This comment is to see if the version is updated
 ALL_WORKARENA_TASKS = [
     *ALL_COMPOSITIONAL_TASKS_L2,
     *ALL_COMPOSITIONAL_TASKS_L3,
