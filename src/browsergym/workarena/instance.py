@@ -79,15 +79,23 @@ class SNowInstance:
 
     def _check_is_reachable(self):
         """
-        Test that the ServiceNow instance is reachable
-
+        Test that the ServiceNow instance is reachable with up to 10 retries.
         """
-        try:
-            requests.get(self.snow_url, timeout=SNOW_BROWSER_TIMEOUT)
-        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-            raise RuntimeError(
-                f"ServiceNow instance at {self.snow_url} is not reachable. Please check the URL."
-            )
+        import time
+        retries = 100 # Number of retries
+        for attempt in range(retries):
+            try:
+                response = requests.get(self.snow_url, timeout=SNOW_BROWSER_TIMEOUT)
+                response.raise_for_status()  # Raises an error for non-2xx status codes
+                return  # If successful, exit the function
+            except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+                print(f"Attempt {attempt + 1} failed: {e}")
+                if attempt < retries - 1:
+                    time.sleep(2 * attempt)  # Exponential backoff: wait 2, 4, 8, 16... seconds
+                else:
+                    raise RuntimeError(
+                        f"ServiceNow instance at {self.snow_url} is not reachable after {retries} attempts. Please check the URL."
+                    )
 
     @property
     def release_version(self) -> str:
