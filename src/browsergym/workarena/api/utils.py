@@ -52,16 +52,29 @@ def table_api_call(
 
     """
 
+    def send_request(i: int = 0) -> requests.Response:
+        max_retries = 20
+        try:
+            response = requests.request(
+                method=method,
+                url=instance.snow_url + f"/api/now/table/{table}",
+                auth=instance.snow_credentials,
+                headers=SNOW_API_HEADERS,
+                data=data,
+                params=params,
+                json=json,
+            )
+            response.raise_for_status()
+            return response
+        except Exception as e:
+            if i < max_retries:
+                i += 1
+                sleep(0.5)
+                return send_request(i)
+            else:
+                raise e
     # Query API
-    response = requests.request(
-        method=method,
-        url=instance.snow_url + f"/api/now/table/{table}",
-        auth=instance.snow_credentials,
-        headers=SNOW_API_HEADERS,
-        data=data,
-        params=params,
-        json=json,
-    )
+    response = send_request()
     if method == "POST":
         sys_id = response.json()["result"]["sys_id"]
         data = {}
