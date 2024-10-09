@@ -82,16 +82,15 @@ class SNowInstance:
         Test that the ServiceNow instance is reachable with up to 10 retries.
         """
         import time
-        retries = 100 # Number of retries
+        retries = 20 
         for attempt in range(retries):
             try:
                 response = requests.get(self.snow_url, timeout=SNOW_BROWSER_TIMEOUT)
-                response.raise_for_status()  # Raises an error for non-2xx status codes
-                return  # If successful, exit the function
+                response.raise_for_status()  
+                return  
             except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
-                print(f"Attempt {attempt + 1} failed: {e}")
                 if attempt < retries - 1:
-                    time.sleep(2 * attempt)  # Exponential backoff: wait 2, 4, 8, 16... seconds
+                    time.sleep(0.5) 
                 else:
                     raise RuntimeError(
                         f"ServiceNow instance at {self.snow_url} is not reachable after {retries} attempts. Please check the URL."
