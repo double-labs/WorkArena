@@ -993,7 +993,6 @@ def setup(instance: SNowInstance):
     Check that WorkArena is installed correctly in the instance.
 
     """
-    from pdb import set_trace; set_trace()
     if not check_instance_release_support(instance):
         return  # Don't continue if the instance is not supported
 
@@ -1021,7 +1020,7 @@ def setup(instance: SNowInstance):
     patch_report_filters(instance)
 
     # XXX: Install workflows first because they may automate some downstream installations
-    setup_workflows()
+    setup_workflows(instance)
     setup_knowledge_bases(instance)
 
     # Setup the user list columns by displaying all columns and checking that the expected number are displayed
