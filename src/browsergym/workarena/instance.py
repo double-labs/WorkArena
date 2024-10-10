@@ -69,13 +69,24 @@ class SNowInstance:
         Test that the ServiceNow instance is not hibernating
 
         """
-        response = requests.get(self.snow_url, timeout=SNOW_BROWSER_TIMEOUT)
+        import time
+        retries = 50
+        for attempt in range(retries):
+            try:
+                response = requests.get(self.snow_url, timeout=SNOW_BROWSER_TIMEOUT)
+                response.raise_for_status()  
+                if "hibernating" in response.text.lower():
+                    raise RuntimeError(
+                        f"ServiceNow instance is hibernating. Please navigate to {self.snow_url} wake it up."
+                    )
+            except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+                if attempt < retries - 1:
+                    time.sleep(0.5) 
+                else:
+                    raise RuntimeError(
+                        f"ServiceNow instance at {self.snow_url} is not reachable after {retries} attempts. Please check the URL."
+                    )
 
-        # Check if the response contains any indication of the instance being in hibernation
-        if "hibernating" in response.text.lower():
-            raise RuntimeError(
-                f"ServiceNow instance is hibernating. Please navigate to {self.snow_url} wake it up."
-            )
 
     def _check_is_reachable(self):
         """
