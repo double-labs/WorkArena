@@ -399,7 +399,7 @@ def setup_workflows(instance: SNowInstance):
 
     """
     if not check_workflows_installed(instance):
-        install_workflows()
+        install_workflows(instance)
         assert check_workflows_installed(instance), "Workflow installation failed."
         logging.info("Workflow installation succeeded.")
 
@@ -825,11 +825,12 @@ def setup_ui_themes(instance: SNowInstance):
 
     """
     logging.info("Installing custom UI themes...")
-    _install_update_set(path=UI_THEMES_UPDATE_SET["update_set"], name=UI_THEMES_UPDATE_SET["name"])
-    check_ui_themes_installed()
+    _install_update_set(instance, path=UI_THEMES_UPDATE_SET["update_set"], name=UI_THEMES_UPDATE_SET["name"])
+    check_ui_themes_installed(instance)
 
     logging.info("Setting default UI theme")
     _set_sys_property(
+        instance,
         property_name="glide.ui.polaris.theme.custom",
         value=get_workarena_theme_variants(instance)[0]["theme.sys_id"],
     )
