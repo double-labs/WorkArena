@@ -82,7 +82,7 @@ class SNowInstance:
         Test that the ServiceNow instance is reachable with up to 10 retries.
         """
         import time
-        retries = 20 
+        retries = 50
         for attempt in range(retries):
             try:
                 response = requests.get(self.snow_url, timeout=SNOW_BROWSER_TIMEOUT)

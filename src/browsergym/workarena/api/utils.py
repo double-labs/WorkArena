@@ -53,7 +53,7 @@ def table_api_call(
     """
 
     def send_request(i: int = 0) -> requests.Response:
-        max_retries = 20
+        max_retries = 50
         try:
             response = requests.request(
                 method=method,

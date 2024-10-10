@@ -31,5 +31,5 @@ def get_workarena_theme_variants(instance):
         },
         method="GET",
     )["result"]
-    # themes = [t for t in themes if t["theme.name"] == "WorkArena"]
+    themes = [t for t in themes if t["theme.name"] == "WorkArena"]
     return themes
