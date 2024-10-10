@@ -177,11 +177,23 @@ def db_delete_from_table(instance: SNowInstance, sys_id: str, table: str) -> Non
 
     """
     # Query API
-    response = requests.delete(
-        url=instance.snow_url + f"/api/now/table/{table}/{sys_id}",
-        auth=instance.snow_credentials,
-        headers=SNOW_API_HEADERS,
-    )
-
+    def send_request(i: int = 0) -> requests.Response:
+        max_retries = 50
+        try:
+            response = requests.delete(
+                url=instance.snow_url + f"/api/now/table/{table}/{sys_id}",
+                auth=instance.snow_credentials,
+                headers=SNOW_API_HEADERS,
+            )
+            response.raise_for_status()
+            return response
+        except Exception as e:
+            if i < max_retries:
+                i += 1
+                sleep(0.5)
+                return send_request(i)
+            else:
+                raise e
+    response = send_request()
     # Check for HTTP code 200 (fail otherwise)
     response.raise_for_status()
