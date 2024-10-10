@@ -525,13 +525,16 @@ class DashboardRetrievalTask(AbstractServiceNowTask, ABC):
             label = self.config["question"].split(";")[2].strip()
             logging.debug(f"Extracted format: {format}, label: {label}")
 
-            expected_value = float(
-                [
+            val = [
                     point["count" if format == "count" else "percent"]
                     for point in chart_data
                     if point["label"] == label
                 ][0]
-            )
+            try:
+                expected_value = float(val)
+            except:
+                expected_value = float(val.replace(",", "."))
+
             if np.isclose(expected_value, response_floats[0]):
                 return 1.0, True, "Nice work, thank you!", {"message": "Correct answer."}
             else:
