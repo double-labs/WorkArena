@@ -535,7 +535,8 @@ class DashboardRetrievalTask(AbstractServiceNowTask, ABC):
             except:
                 expected_value = float(val.replace(",", "."))
 
-            if np.isclose(expected_value, response_floats[0]):
+            # they never mentioned what precision do they want to extract the value with
+            if np.isclose(expected_value, response_floats[0], atol=0.5):
                 return 1.0, True, "Nice work, thank you!", {"message": "Correct answer."}
             else:
                 return 0.0, True, f"Incorrect answer.", {"message": "Incorrect answer."}
