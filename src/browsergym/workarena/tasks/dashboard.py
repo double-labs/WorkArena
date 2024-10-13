@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from tenacity import retry, stop_after_attempt, wait_fixed
 from typing import List, Tuple
 from urllib import parse
+import string
 
 from .base import AbstractServiceNowTask
 from .comp_building_block import CompositionalBuildingBlockTask
@@ -560,7 +561,7 @@ class DashboardRetrievalTask(AbstractServiceNowTask, ABC):
 
             # Check if any of these points are mentioned in the response
             for point in target_points:
-                if point["label"].lower() in response.lower() and np.isclose(
+                if normalize_str(point["label"].lower()) in normalize_str(response.lower()) and np.isclose(
                     target_count, response_floats[0]
                 ):
                     return 1.0, True, "Nice work, thank you!", {"message": "Correct answer."}
@@ -796,6 +797,13 @@ class WorkLoadBalancingMinMaxRetrievalTask(
         goal += " From the report, identify the user with the most assigned problems and the user with the least assigned problems."
 
         return goal, {}
+
+
+def normalize_str(input_string: str) -> str:
+    no_whitespace = input_string.replace(" ", "")
+    # Remove punctuation
+    no_punctuation = no_whitespace.translate(str.maketrans("", "", string.punctuation))
+    return no_punctuation
 
 
 __TASKS__ = [
