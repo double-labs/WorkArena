@@ -538,6 +538,8 @@ class DashboardRetrievalTask(AbstractServiceNowTask, ABC):
                 else:
                     return 0.0, True, "Incorrect answer.", {"message": "Incorrect answer."}
 
+            val = val[0]
+
             try:
                 expected_value = float(val)
             except:
