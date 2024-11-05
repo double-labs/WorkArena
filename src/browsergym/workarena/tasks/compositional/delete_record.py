@@ -1,3 +1,4 @@
+import time
 import faker
 
 faker = faker.Faker()
@@ -135,15 +136,17 @@ class DeleteRecordTask(AbstractServiceNowTask):
             search_input.fill(self.field_value)
             search_input.press("Enter")
             page.wait_for_function(
-                "typeof window.gsft_main !== 'undefined' && window.gsft_main.WORKARENA_LOAD_COMPLETE"
+                "typeof window.gsft_main !== 'undefined' "
             )
+            time.sleep(1)
             # Click on the record to open it
             # The first 2 displays of the record are in the search bar; the 3rd and last will be the link to open it
             frame.get_by_label(self.field_value).last.click()
 
         page.wait_for_function(
-            "typeof window.gsft_main !== 'undefined' && window.gsft_main.WORKARENA_LOAD_COMPLETE"
+            "typeof window.gsft_main !== 'undefined'"
         )
+        time.sleep(1)
         frame = page.wait_for_selector('iframe[name="gsft_main"]').content_frame()
         # Click on delete, then confirm delete in the popup
         frame.get_by_text("delete").first.click()

@@ -1,6 +1,7 @@
 import inspect
 import json
 import logging
+import time
 import playwright.sync_api
 import re
 
@@ -1112,8 +1113,9 @@ class EditRecordTask(ServiceNowFormTask, CompositionalBuildingBlockTask):
 
             iframe.get_by_text("Open Record").click()
             page.wait_for_function(
-                "typeof window.gsft_main !== 'undefined' && window.gsft_main.WORKARENA_LOAD_COMPLETE"
+                "typeof window.gsft_main !== 'undefined'"
             )
+            time.sleep(1)
         page.wait_for_timeout(1000)
         self._fill_fields(page, iframe, self.new_values.keys(), update=True)
 

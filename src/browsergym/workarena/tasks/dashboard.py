@@ -1,5 +1,6 @@
 import json
 import logging
+import time
 import numpy as np
 import playwright.sync_api
 import re
@@ -352,16 +353,18 @@ class DashboardRetrievalTask(AbstractServiceNowTask, ABC):
             search_input.fill(chart_title)
             search_input.press("Enter")
             page.wait_for_function(
-                "typeof window.gsft_main !== 'undefined' && window.gsft_main.WORKARENA_LOAD_COMPLETE"
+                "typeof window.gsft_main !== 'undefined'"
             )
+            time.sleep(1)
             # Click on the chart preview to open it
             frame.wait_for_selector(f'a[aria-label="Preview record: {chart_title}"]').click()
             page.wait_for_timeout(1000)
             page.keyboard.press("Enter")
             # Now in the form view, wait for the page to load and click to view the report
             page.wait_for_function(
-                "typeof window.gsft_main !== 'undefined' && window.gsft_main.WORKARENA_LOAD_COMPLETE"
+                "typeof window.gsft_main !== 'undefined'"
             )
+            time.sleep(1)
             frame = page.wait_for_selector('iframe[name="gsft_main"]').content_frame()
             frame.get_by_text("View Report").first.click()
 

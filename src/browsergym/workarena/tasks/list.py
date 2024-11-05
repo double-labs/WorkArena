@@ -6,6 +6,7 @@ Tasks related to lists
 import itertools
 import json
 import logging
+import time
 import playwright.sync_api
 import re
 
@@ -187,8 +188,9 @@ class ServiceNowListTask(AbstractServiceNowTask):
         """
         logging.debug(f"Waiting for gsft_main to be fully loaded")
         page.wait_for_function(
-            "typeof window.gsft_main !== 'undefined' && window.gsft_main.WORKARENA_LOAD_COMPLETE"
+            "typeof window.gsft_main !== 'undefined'"
         )
+        time.sleep(1)
         logging.debug("Detected gsft_main ready")
 
         logging.debug("Waiting for Glide list API to be available")
@@ -978,9 +980,10 @@ class ExtractListInfoTask(ServiceNowListTask):
         logging.debug(f"Waiting up to 3 seconds for gsft_main to be ready")
         try:
             page.wait_for_function(
-                "typeof window.gsft_main !== 'undefined' && window.gsft_main.WORKARENA_LOAD_COMPLETE",
+                "typeof window.gsft_main !== 'undefined' ",
                 timeout=3000,
             )
+            time.sleep()
             logging.debug("Detected gsft_main ready")
             gsft_main_present = True
         except TimeoutError:
