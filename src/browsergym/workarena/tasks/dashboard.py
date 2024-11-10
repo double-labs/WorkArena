@@ -11,6 +11,8 @@ from typing import List, Tuple
 from urllib import parse
 import string
 
+from browsergym.workarena.tasks.task_wait_sleep_time import TASK_WAIT_SLEEP_TIME
+
 from .base import AbstractServiceNowTask
 from .comp_building_block import CompositionalBuildingBlockTask
 from .utils.utils import check_url_suffix_match
@@ -230,8 +232,9 @@ class DashboardRetrievalTask(AbstractServiceNowTask, ABC):
         """
         logging.debug(f"Waiting for {self.iframe_id} to be fully loaded")
         page.wait_for_function(
-            f"typeof window.{self.iframe_id} !== 'undefined' && window.{self.iframe_id}.WORKARENA_LOAD_COMPLETE",
+            f"typeof window.{self.iframe_id} !== 'undefined'",
         )
+        time.sleep(TASK_WAIT_SLEEP_TIME)
         logging.debug(f"Detected {self.iframe_id} ready")
 
         logging.debug("Waiting for Highcharts API to be available")
@@ -355,7 +358,7 @@ class DashboardRetrievalTask(AbstractServiceNowTask, ABC):
             page.wait_for_function(
                 "typeof window.gsft_main !== 'undefined'"
             )
-            time.sleep(1)
+            time.sleep(TASK_WAIT_SLEEP_TIME)
             # Click on the chart preview to open it
             frame.wait_for_selector(f'a[aria-label="Preview record: {chart_title}"]').click()
             page.wait_for_timeout(1000)
@@ -364,7 +367,7 @@ class DashboardRetrievalTask(AbstractServiceNowTask, ABC):
             page.wait_for_function(
                 "typeof window.gsft_main !== 'undefined'"
             )
-            time.sleep(1)
+            time.sleep(TASK_WAIT_SLEEP_TIME)
             frame = page.wait_for_selector('iframe[name="gsft_main"]').content_frame()
             frame.get_by_text("View Report").first.click()
 

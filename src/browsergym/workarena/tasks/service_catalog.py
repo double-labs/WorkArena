@@ -5,6 +5,7 @@ Tasks that require interacting with the service catalog
 
 import json
 import logging
+import time
 from typing import List
 import numpy as np
 import playwright.sync_api
@@ -13,6 +14,8 @@ from playwright.sync_api import Page
 import re
 from time import sleep
 from urllib import parse
+
+from browsergym.workarena.tasks.task_wait_sleep_time import TASK_WAIT_SLEEP_TIME
 
 from .base import AbstractServiceNowTask
 from .utils.form import fill_text
@@ -207,8 +210,9 @@ class OrderHardwareTask(AbstractServiceNowTask):
         """
         logging.debug(f"Waiting for {self.js_prefix} to be fully loaded")
         page.wait_for_function(
-            f"typeof window.{self.js_prefix} !== 'undefined' && window.{self.js_prefix}.WORKARENA_LOAD_COMPLETE"
+            f"typeof window.{self.js_prefix} !== 'undefined' ",
         )
+        time.sleep(TASK_WAIT_SLEEP_TIME)
         logging.debug(f"Detected {self.js_prefix} ready")
 
         if wait_for_form_api:

@@ -16,6 +16,8 @@ from typing import List, Tuple
 from urllib import parse
 from warnings import warn
 
+from browsergym.workarena.tasks.task_wait_sleep_time import TASK_WAIT_SLEEP_TIME
+
 from .comp_building_block import CompositionalBuildingBlockTask
 
 from ..api.utils import table_api_call, table_column_info
@@ -190,7 +192,7 @@ class ServiceNowListTask(AbstractServiceNowTask):
         page.wait_for_function(
             "typeof window.gsft_main !== 'undefined'"
         )
-        time.sleep(1)
+        time.sleep(TASK_WAIT_SLEEP_TIME)
         logging.debug("Detected gsft_main ready")
 
         logging.debug("Waiting for Glide list API to be available")
@@ -983,7 +985,7 @@ class ExtractListInfoTask(ServiceNowListTask):
                 "typeof window.gsft_main !== 'undefined' ",
                 timeout=3000,
             )
-            time.sleep()
+            time.sleep(TASK_WAIT_SLEEP_TIME)
             logging.debug("Detected gsft_main ready")
             gsft_main_present = True
         except TimeoutError:

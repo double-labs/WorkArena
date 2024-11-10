@@ -9,6 +9,8 @@ from collections import OrderedDict
 from english_words import get_english_words_set
 from faker import Faker
 
+from browsergym.workarena.tasks.task_wait_sleep_time import TASK_WAIT_SLEEP_TIME
+
 fake = Faker()
 from playwright.sync_api._generated import Page
 from tenacity import retry, stop_after_delay, retry_if_exception_type
@@ -194,8 +196,9 @@ class ServiceNowFormTask(AbstractServiceNowTask):
         Get the form fields; split them into mandatory and optional
         """
         page.wait_for_function(
-            f"typeof window.{self.js_prefix} !== 'undefined' && window.{self.js_prefix}.WORKARENA_LOAD_COMPLETE",
+            f"typeof window.{self.js_prefix} !== 'undefined' ",
         )
+        time.sleep(TASK_WAIT_SLEEP_TIME)
 
         # Get the form fields
         def is_field_visible(field):
@@ -297,8 +300,9 @@ class ServiceNowFormTask(AbstractServiceNowTask):
         logging.debug(f"Waiting for {self.js_prefix} to be fully loaded")
         try:
             page.wait_for_function(
-                f"typeof window.{self.js_prefix} !== 'undefined' && window.{self.js_prefix}.WORKARENA_LOAD_COMPLETE",
+                f"typeof window.{self.js_prefix} !== 'undefined' ",
             )
+            time.sleep(TASK_WAIT_SLEEP_TIME)
         except:
             try:
                 page.wait_for_load_state("networkidle")

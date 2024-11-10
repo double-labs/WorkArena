@@ -1,6 +1,8 @@
 import time
 import faker
 
+from browsergym.workarena.tasks.task_wait_sleep_time import TASK_WAIT_SLEEP_TIME
+
 faker = faker.Faker()
 import json
 
@@ -138,7 +140,7 @@ class DeleteRecordTask(AbstractServiceNowTask):
             page.wait_for_function(
                 "typeof window.gsft_main !== 'undefined' "
             )
-            time.sleep(1)
+            time.sleep(TASK_WAIT_SLEEP_TIME)
             # Click on the record to open it
             # The first 2 displays of the record are in the search bar; the 3rd and last will be the link to open it
             frame.get_by_label(self.field_value).last.click()
@@ -146,7 +148,7 @@ class DeleteRecordTask(AbstractServiceNowTask):
         page.wait_for_function(
             "typeof window.gsft_main !== 'undefined'"
         )
-        time.sleep(1)
+        time.sleep(TASK_WAIT_SLEEP_TIME)
         frame = page.wait_for_selector('iframe[name="gsft_main"]').content_frame()
         # Click on delete, then confirm delete in the popup
         frame.get_by_text("delete").first.click()
