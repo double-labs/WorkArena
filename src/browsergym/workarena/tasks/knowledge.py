@@ -111,7 +111,13 @@ class KnowledgeBaseSearchTask(AbstractServiceNowTask):
         #       because gsft_main doesn't have the event we register
         #       on this page. Not sure why.
         logging.debug(f"Waiting for page to be fully loaded")
-        page.wait_for_load_state("networkidle")
+        try:
+            page.wait_for_load_state("networkidle")
+        except:
+            try:
+                page.wait_for_load_state("networkidle")
+            except:
+                pass
         page.wait_for_selector('iframe[name="gsft_main"]')
         logging.debug(f"Detected page ready")
 
@@ -302,7 +308,13 @@ class AddCommentToKnowledgeArticleTask(AbstractServiceNowTask, CompositionalBuil
         #       because gsft_main doesn't have the event we register
         #       on this page. Not sure why.
         logging.debug(f"Waiting for page to be fully loaded")
-        page.wait_for_load_state("networkidle")
+        try:
+            page.wait_for_load_state("networkidle")
+        except:
+            try:
+                page.wait_for_load_state("networkidle")
+            except:
+                pass
         page.wait_for_selector('iframe[name="gsft_main"]')
         logging.debug(f"Detected page ready")
 

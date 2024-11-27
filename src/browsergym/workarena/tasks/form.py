@@ -299,7 +299,13 @@ class ServiceNowFormTask(AbstractServiceNowTask):
                 f"typeof window.{self.js_prefix} !== 'undefined' && window.{self.js_prefix}.WORKARENA_LOAD_COMPLETE",
             )
         except:
-            page.wait_for_load_state("networkidle")
+            try:
+                page.wait_for_load_state("networkidle")
+            except:
+                try:
+                    page.wait_for_load_state("networkidle")
+                except:
+                    pass
             return
         logging.debug(f"Detected {self.js_prefix} ready")
 

@@ -35,7 +35,13 @@ def impersonate_user(username: str, page: playwright.sync_api.Page):
         page.get_by_role("button", name="Impersonate user").click()
 
     # If there is the analytics dialog, close it
-    page.wait_for_load_state("networkidle")
+    try:
+        page.wait_for_load_state("networkidle")
+    except:
+        try:
+            page.wait_for_load_state("networkidle")
+        except:
+            pass
     if page.get_by_label("Close dialog").count() > 0:
         page.keyboard.press("Escape")
 

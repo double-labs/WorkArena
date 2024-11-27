@@ -31,7 +31,13 @@ def create_private_task_and_get_sys_id(
     user_sys_id: str
         The sys_id of the user to assign the task to. If None, the task will be assigned to the admin user.
     """
-    page.wait_for_load_state("networkidle")
+    try:
+        page.wait_for_load_state("networkidle")
+    except:
+        try:
+            page.wait_for_load_state("networkidle")
+        except:
+            pass
     if user_sys_id is None:
         # Get the user sys_id; if the page is blank, use the admin user
         if page.url == "about:blank":

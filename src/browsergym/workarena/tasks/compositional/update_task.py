@@ -93,7 +93,13 @@ class UpdatePrivateTask(AbstractServiceNowTask, CompositionalBuildingBlockTask):
         # Click on the private task to open it
         frame.get_by_label(f"Open record: {self.private_task_id}").click()
         page.wait_for_timeout(2000)
-        page.wait_for_load_state("networkidle")
+        try:
+            page.wait_for_load_state("networkidle")
+        except:
+            try:
+                page.wait_for_load_state("networkidle")
+            except:
+                pass
         frame = page.wait_for_selector('iframe[name="gsft_main"]').content_frame()
         page.wait_for_timeout(1500)
         # Click on the task state, select "Closed-Complete" if complete, else "Closed Skipped" and update the task

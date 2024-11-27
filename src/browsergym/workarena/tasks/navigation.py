@@ -73,7 +73,13 @@ class AllMenuTask(AbstractServiceNowTask):
     def cheat(self, page: Page, chat_messages: list[str]) -> None:
         super().cheat(page=page, chat_messages=chat_messages)
         # gsft_main remains undefined on the landing page; we have to wait for the network to be idle instead.
-        page.wait_for_load_state("networkidle")
+        try:
+            page.wait_for_load_state("networkidle")
+        except:
+            try:
+                page.wait_for_load_state("networkidle")
+            except:
+                pass
         menu_button = page.locator('div[aria-label="All"]')
         if menu_button.get_attribute("aria-expanded").lower() != "true":
             menu_button.click()

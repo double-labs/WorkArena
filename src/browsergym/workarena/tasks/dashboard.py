@@ -707,7 +707,13 @@ class DashboardRetrievalTask(AbstractServiceNowTask, ABC):
         self.setup(page=page)
 
         # Handle the case where a dashboard is not found
-        page.wait_for_load_state("networkidle")
+        try:
+            page.wait_for_load_state("networkidle")
+        except:
+            try:
+                page.wait_for_load_state("networkidle")
+            except:
+                pass
         iframe = page.frame(name=self.iframe_id)
         assert iframe.get_by_text("not found").count() == 0, "Report or dashboard not found"
 

@@ -91,7 +91,13 @@ class SetProblemAsDuplicateTask(AbstractServiceNowTask, CompositionalBuildingBlo
         # Click on the private task to open it
         frame.get_by_text("Open Record").click()
         page.wait_for_timeout(2000)
-        page.wait_for_load_state("networkidle")
+        try:
+            page.wait_for_load_state("networkidle")
+        except:
+            try:
+                page.wait_for_load_state("networkidle")
+            except:
+                pass
         frame = page.wait_for_selector('iframe[name="gsft_main"]').content_frame()
         page.wait_for_timeout(1500)
         # Open the duplicate mode
