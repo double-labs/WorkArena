@@ -9,6 +9,7 @@ import logging
 import time
 import playwright.sync_api
 import re
+import traceback
 
 from playwright.sync_api import Page
 from tenacity import retry, retry_if_exception_type, stop_after_delay
@@ -188,16 +189,19 @@ class ServiceNowListTask(AbstractServiceNowTask):
         Waits for the main iframe to be fully loaded
 
         """
-        logging.debug(f"Waiting for gsft_main to be fully loaded")
-        page.wait_for_function(
-            "typeof window.gsft_main !== 'undefined'"
-        )
-        time.sleep(TASK_WAIT_SLEEP_TIME)
-        logging.debug("Detected gsft_main ready")
+        try:
+            logging.debug(f"Waiting for gsft_main to be fully loaded")
+            page.wait_for_function(
+                "typeof window.gsft_main !== 'undefined'"
+            )
+            time.sleep(TASK_WAIT_SLEEP_TIME)
+            logging.debug("Detected gsft_main ready")
 
-        logging.debug("Waiting for Glide list API to be available")
-        page.wait_for_function("window.gsft_main.GlideList2 !== undefined")
-        logging.debug("Detected Glide list API ready")
+            logging.debug("Waiting for Glide list API to be available")
+            page.wait_for_function("window.gsft_main.GlideList2 !== undefined")
+            logging.debug("Detected Glide list API ready")
+        except Exception as e:
+            logging.error(f"Error for ready: {e}; {traceback.format_exc()}")
 
 
 class SortListTask(ServiceNowListTask):
