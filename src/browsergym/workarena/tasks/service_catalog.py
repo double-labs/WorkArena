@@ -226,7 +226,7 @@ class OrderHardwareTask(AbstractServiceNowTask):
 
     def get_init_scripts(self) -> List[str]:
         return super().get_init_scripts() + [
-            "registerGsftMainLoaded()",
+            "HtmlProcessor.registerGsftMainLoaded()",
             self._get_disable_add_to_cart_script(),
             self._get_remove_top_items_panel_script(),
         ]
@@ -239,17 +239,17 @@ class OrderHardwareTask(AbstractServiceNowTask):
         """
         script = """
             function disableAddToCartButton() {
-                waLog('Searching for top items panel...', 'disableAddToCartButton');
+                HtmlProcessor.waLog('Searching for top items panel...', 'disableAddToCartButton');
                 let button = document.querySelector('button[aria-label="Add to Cart"]');
                 if (button) {
                     button.disabled = true;
-                    waLog('WorkArena: Disabled the "Add to Cart" button', 'disableAddToCartButton');
+                    HtmlProcessor.waLog('WorkArena: Disabled the "Add to Cart" button', 'disableAddToCartButton');
                 } else {
-                    waLog('WorkArena: Could not find the "Add to Cart" button', 'disableAddToCartButton');
+                    HtmlProcessor.waLog('WorkArena: Could not find the "Add to Cart" button', 'disableAddToCartButton');
                 }
             }
 
-            runInGsftMainOnlyAndProtectByURL(disableAddToCartButton, 'glideapp.servicecatalog_cat_item_view.do');
+            HtmlProcessor.runInGsftMainOnlyAndProtectByURL(disableAddToCartButton, 'glideapp.servicecatalog_cat_item_view.do');
         """
         return script
 
@@ -263,20 +263,20 @@ class OrderHardwareTask(AbstractServiceNowTask):
         """
         script = """
             function removeTopItemsPanel() {
-                waLog('Searching for top items panel...', 'removeTopItemsPanel');
+                HtmlProcessor.waLog('Searching for top items panel...', 'removeTopItemsPanel');
                 let headings = Array.from(document.querySelectorAll('[role="heading"]'));
                 headings.forEach((heading) => {
                     if (heading.textContent.includes("Top Requests")) {
                         let parentDiv = heading.closest('div.drag_section');
                         if (parentDiv) {
                             parentDiv.remove();
-                            waLog('Removed parent div for heading: ' + heading.textContent, 'removeTopItemsPanel');
+                            HtmlProcessor.waLog('Removed parent div for heading: ' + heading.textContent, 'removeTopItemsPanel');
                         }
                     }
                 });
             }
 
-            runInGsftMainOnlyAndProtectByURL(removeTopItemsPanel, `catalog_home`);
+            HtmlProcessor.runInGsftMainOnlyAndProtectByURL(removeTopItemsPanel, `catalog_home`);
             """
         return script
 

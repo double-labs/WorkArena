@@ -332,24 +332,24 @@ class ServiceNowFormTask(AbstractServiceNowTask):
 
         # Add a few initialization scripts
         return super().get_init_scripts() + [
-            "registerGsftMainLoaded();",
+            "HtmlProcessor.registerGsftMainLoaded();",
             # ... Mark the extra mandatory fields as such
             f"""
                 function addFormMandatoryFields() {{
-                    waLog('Setting mandatory fields', 'addFormMandatoryFields');
+                    HtmlProcessor.waLog('Setting mandatory fields', 'addFormMandatoryFields');
                     {";".join([f"{self.js_api_forms}.setMandatory('{f}', true)" for f in self.extra_mandatory_fields])}
-                    waLog('Mandatory fields set successfully.', 'addFormMandatoryFields');
+                    HtmlProcessor.waLog('Mandatory fields set successfully.', 'addFormMandatoryFields');
                 }}
 
-                runInGsftMainOnlyAndProtectByURL(addFormMandatoryFields, '{url_suffix}');
+                HtmlProcessor.runInGsftMainOnlyAndProtectByURL(addFormMandatoryFields, '{url_suffix}');
                 """,
             f"""
                 function patchSubmitButton() {{
-                    waLog('Attempting to override form submit function', 'patchSubmitButton');
+                    HtmlProcessor.waLog('Attempting to override form submit function', 'patchSubmitButton');
                     // Save the original function if it hasn't been saved yet
                     if(typeof old_gsftSubmit == 'undefined'){{
                         old_gsftSubmit = new Function('return ' + gsftSubmit.toString())();
-                        waLog('Saved original submit function', 'patchSubmitButton');
+                        HtmlProcessor.waLog('Saved original submit function', 'patchSubmitButton');
                     }}
 
                     // Override the function to save the sys_id in the local storage
@@ -357,10 +357,10 @@ class ServiceNowFormTask(AbstractServiceNowTask):
                         localStorage['{self.session_sys_id_field}'] = {self.js_api_forms}.getUniqueValue();
                         old_gsftSubmit(control, form, action_name);
                     }};
-                    waLog('Patched submit function. All done.', 'patchSubmitButton');
+                    HtmlProcessor.waLog('Patched submit function. All done.', 'patchSubmitButton');
                 }}
 
-                runInGsftMainOnlyAndProtectByURL(patchSubmitButton, '{url_suffix}');
+                HtmlProcessor.runInGsftMainOnlyAndProtectByURL(patchSubmitButton, '{url_suffix}');
                 """,
             # Ensure that only the expected fields are changed
             f"""
@@ -375,12 +375,12 @@ class ServiceNowFormTask(AbstractServiceNowTask):
                                 window.WORKARENA_BAD_FIELD_CHANGED = true;
                                 console.log("Field " + e.name + " changed and was not expected to.");
                             }})
-                            waLog('Added change listener to field ' + e.name, 'monitorChangeOnFields');
+                            HtmlProcessor.waLog('Added change listener to field ' + e.name, 'monitorChangeOnFields');
                         }}
                     }})
                 }}
 
-                runInGsftMainOnlyAndProtectByURL(monitorChangeOnFields, '{url_suffix}');
+                HtmlProcessor.runInGsftMainOnlyAndProtectByURL(monitorChangeOnFields, '{url_suffix}');
             """,
         ]
 

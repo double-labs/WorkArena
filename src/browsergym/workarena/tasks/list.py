@@ -112,7 +112,7 @@ class ServiceNowListTask(AbstractServiceNowTask):
             return json.load(f)
 
     def get_init_scripts(self) -> List[str]:
-        return super().get_init_scripts() + ["registerGsftMainLoaded();"]
+        return super().get_init_scripts() + ["HtmlProcessor.registerGsftMainLoaded();"]
 
     def _get_visible_list(self, page: Page):
         self._wait_for_ready(page)

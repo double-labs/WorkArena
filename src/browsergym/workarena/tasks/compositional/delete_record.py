@@ -107,7 +107,7 @@ class DeleteRecordTask(AbstractServiceNowTask):
         return goal, {}
 
     def get_init_scripts(self) -> List[str]:
-        return super().get_init_scripts() + ["registerGsftMainLoaded();"]
+        return super().get_init_scripts() + ["HtmlProcessor.registerGsftMainLoaded();"]
 
     def get_pretty_printed_description(self) -> str:
         """

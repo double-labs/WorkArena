@@ -247,37 +247,37 @@ class DashboardRetrievalTask(AbstractServiceNowTask, ABC):
 
     def get_init_scripts(self) -> List[str]:
         return super().get_init_scripts() + [
-            "registerGsftMainLoaded();",
+            "HtmlProcessor.registerGsftMainLoaded();",
             f"""
             async function renderAllCharts() {{
-                waLog('Forcing load of all charts', 'loadAllCharts');
+                HtmlProcessor.waLog('Forcing load of all charts', 'loadAllCharts');
 
-                await waitForCondition(() => window.WORKARENA_LOAD_COMPLETE, 100);
+                await HtmlProcessor.waitForCondition(() => window.WORKARENA_LOAD_COMPLETE, 100);
 
                 const canvas = window.SNC.canvas;
                 if (canvas) {{
-                    waLog('This is a dashboard page.', 'loadAllCharts');
+                    HtmlProcessor.waLog('This is a dashboard page.', 'loadAllCharts');
                     // Trigger the rendering of each widget
                     canvas.layoutJson.panes.forEach((p) => canvas.canvasUtils.renderSlowWidget(canvas.canvasUtils.getWidgetContainer(p.uuid)));
                     // Wait for all widgets to be rendered
-                    await waitForCondition(() => window.SNC.canvas.layoutJson.panes.map((p) => p.isRendered).every(value => value == true), 100);
+                    await HtmlProcessor.waitForCondition(() => window.SNC.canvas.layoutJson.panes.map((p) => p.isRendered).every(value => value == true), 100);
                 }}
                 else {{
-                    waLog('This is a report page.', 'loadAllCharts');
+                    HtmlProcessor.waLog('This is a report page.', 'loadAllCharts');
                     // Wait for axes to be visible (we need to use this approach since there is no canvas to help us)
-                    await waitForCondition(() => document.body.innerText.toLowerCase().includes("no data to display") || document.querySelectorAll(".highcharts-point").length > 0, 100);
+                    await HtmlProcessor.waitForCondition(() => document.body.innerText.toLowerCase().includes("no data to display") || document.querySelectorAll(".highcharts-point").length > 0, 100);
                 }}
 
                 // Wait for Highcharts to say that the charts are rendered
-                waitForCondition(() => Highcharts.charts.all((c) => c.hasLoaded), 100)
+                HtmlProcessor.waitForCondition(() => Highcharts.charts.all((c) => c.hasLoaded), 100)
                 .then(() => {{
                             window.WORKARENA_HIGHCHARTS_ALL_LOADED = true;
-                            waLog('All charts loaded', 'loadAllCharts');
+                            HtmlProcessor.waLog('All charts loaded', 'loadAllCharts');
                         }});
             }}
             // Run on both dashboard and reports pages
-            runInGsftMainOnlyAndProtectByURL(renderAllCharts, 'pa_dashboard.do');
-            runInGsftMainOnlyAndProtectByURL(renderAllCharts, 'sys_report_template.do');
+            HtmlProcessor.runInGsftMainOnlyAndProtectByURL(renderAllCharts, 'pa_dashboard.do');
+            HtmlProcessor.runInGsftMainOnlyAndProtectByURL(renderAllCharts, 'sys_report_template.do');
             """,
             f"""
             function purifyReportUIButtons() {{
@@ -293,10 +293,10 @@ class DashboardRetrievalTask(AbstractServiceNowTask, ABC):
                     event.stopPropagation();
                     event.preventDefault();
                 }}, true);
-                waLog('Purified report UI.', 'purifyReportUIButtons');
+                HtmlProcessor.waLog('Purified report UI.', 'purifyReportUIButtons');
             }}
             // Run it only on the reports page
-            runInGsftMainOnlyAndProtectByURL(purifyReportUIButtons, 'sys_report_template.do');
+            HtmlProcessor.runInGsftMainOnlyAndProtectByURL(purifyReportUIButtons, 'sys_report_template.do');
             """,
         ]
 
