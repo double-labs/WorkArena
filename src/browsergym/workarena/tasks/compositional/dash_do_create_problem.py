@@ -130,7 +130,7 @@ class DashboardRetrieveIncidentAndCreateProblemTask(DashboardRetrieveIncidentAnd
                 + f"\n1. Navigate to the Reports > View/Run page. \n"
                 + f"\n2. Given the title of the report, search for it on this page. The report shows the number of 'incidents' assigned to an 'agent'.\n"
                 + f"\n3. Find the agents with a number of incidents assigned less than or equal to the {self.description_mapping[self.question]} of the number of assigned incidents across agents. For example, if you were asked to find the 'mean' or 'average' for a case where there are 4 agents assigned 1,2,3,2 incidents respectively, the mean would be 2. The list of agents required for solving the following task would be all the agents that have less than or equal to 2 assigned incidents.\n"
-                + f"\n4. Navigate to All > Problems. \n"
+                + f"\n4. Navigate to Problem > All. \n"
                 + f"\n5. You have to create new 'problems' from this page for all the agents based on the above criteria. Only fill the following fields when creating a new problem:- Impact: '1 - High', Urgency: '1 - High', Problem statement: 'Compulsory training for employee in probation' and 'assign' them to each agent.\n\n"
                 + f"Note that you will create as many problems as there are agents matching the above criteria."
                 + "\nFor example, consider the above case and say you have 3 agents with less than or equal to 2 incidents assigned to them in the chart. You will be creating '3' problems here, one assigned to each agent. \n"
