@@ -5,6 +5,7 @@ fake = Faker()
 from playwright.sync_api._generated import Page
 
 from browsergym.workarena.tasks.knowledge import KnowledgeBaseSearchTask
+from browsergym.workarena.tasks.send_chat_message import SendChatMessageGenericTask
 from browsergym.workarena.tasks.list import FilterListTask
 from browsergym.workarena.tasks.navigation import AllMenuTask
 
@@ -119,6 +120,17 @@ class FilterAndDoTask(CompositionalTask):
                 instance=self.instance,
                 fixed_config=self.navigation_config,
                 is_validated=False,
+                used_in_level_2=True,
+            ),
+            # Clear the filters on the page
+            SendChatMessageGenericTask(
+                instance=self.instance,
+                message="a",
+                answer_format="a",
+                level=self.level,
+                description=f"Clear the existing filters on the page. \n",
+                is_validated=False,
+                use_description_in_l3=True,
                 used_in_level_2=True,
             ),
             # Filter the the list; the config it uses is set by the _setup_list method

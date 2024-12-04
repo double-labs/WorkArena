@@ -3,7 +3,6 @@ from faker import Faker
 fake = Faker()
 
 from browsergym.workarena.tasks.navigation import AllMenuTask
-from browsergym.workarena.tasks.send_chat_message import SendChatMessageGenericTask
 from browsergym.workarena.tasks.service_catalog import (
     OrderDeveloperLaptopTask,
     OrderIpadMiniTask,
@@ -113,18 +112,6 @@ class FilterRequestedItemsAndOrderCatalogItemTask(FilterAndDoTask, HumanEvalTask
                 },
                 used_in_level_2=True,
                 is_validated=False,
-            )
-        )
-        self.tasks.append(
-            SendChatMessageGenericTask(
-                instance=self.instance,
-                message="a",
-                answer_format="a",
-                level=self.level,
-                description=f"Clear the existing filters on the page. \n",
-                is_validated=False,
-                use_description_in_l3=True,
-                used_in_level_2=True,
             )
         )
         order_task_config = self.random.choice(self.order_task_class.all_configs())
